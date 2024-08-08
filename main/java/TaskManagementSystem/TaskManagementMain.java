@@ -29,6 +29,10 @@ public class TaskManagementMain {
                     break;
                 case 2:man.viewAllTasks();
                 break;
+                case 3:
+                    System.out.println("Enter task id: ");
+                    man.edit(s.nextInt());
+                    break;
                 case 4:
                     System.out.print("Enter task id: ");
                     man.delete(s.nextInt());
@@ -42,9 +46,7 @@ public class TaskManagementMain {
                 default:
                     System.out.println("Invalid Input!");
                     break;
-
             }
-
 
         }while(true);
     }

@@ -11,6 +11,7 @@ public class TaskManager {
     List<Task> tasks=new ArrayList<>();
     Gson gson=new Gson();
     public void addTask(Task task){
+        fetchContent(tasks);
         tasks.add(task);
         if(uniqueID.contains(task.getTaskId())){
             System.out.println("Task with ID " + task.getTaskId() + " already exists. Please choose a different ID.");
@@ -96,5 +97,62 @@ public class TaskManager {
         }catch(IOException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public void fetchContent(List<Task>list){
+        try(FileReader reader=new FileReader("src/main/java/TaskManagementSystem/task.json")){
+            Task[] task=gson.fromJson(reader,Task[].class);
+            list.clear();
+            uniqueID.clear();
+            list.addAll(Arrays.asList(task));
+            for(Task i:list){
+                uniqueID.add(i.getTaskId());
+            }
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public void edit(int id){
+        List<Task>taskList_edit=new ArrayList<>();
+        try(FileReader reader=new FileReader("src/main/java/TaskManagementSystem/task.json")){
+            Task[] task=gson.fromJson(reader,Task[].class);
+            taskList_edit.addAll(Arrays.asList(task));
+            Task complete_task=null;
+            for(Task i:taskList_edit){
+                if(i.getTaskId()==id){
+                    complete_task=i;
+                    break;
+                }
+            }
+            if(complete_task!=null){
+                Scanner sc=new Scanner(System.in);
+                System.out.println("1. Edit Description");
+                System.out.println("2. Edit Due date");
+                System.out.println("3. Exit");
+                System.out.println("Enter your choice");
+                switch(sc.nextInt()){
+                    case 1:
+                        System.out.println("Enter new Description: ");
+                        sc.nextLine();
+                        complete_task.setDesc(sc.nextLine());
+                        saveTasks(taskList_edit);
+                        break;
+                    case 2:
+                        System.out.println("Enter new Due date: ");
+                        complete_task.setDue_date(sc.next());
+                        saveTasks(taskList_edit);
+                        break;
+                    case 3:
+                        return;
+
+                }
+            }
+            else {
+                System.out.println("Task with ID " + id + " not found.");
+            }
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 }
